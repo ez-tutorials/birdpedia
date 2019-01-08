@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title> The bird encyclopedia</title>
+  </head>
+
+  <body>
+    <h1>The bird encyclopedia</h1>
+    <!--
+      tale of list of birds and descriptions
+    -->
+    <table>
+      <tr>
+        <th>Species</th>
+        <th>Despcription</th>
+      </tr>
+      <td>Pigeon</td>
+      <td>Common in cities</td>
+      </tr>
+    </table>
+    <br/>
+
+    <!--
+      forms that will be used to hit "POST /bird" API
+    -->
+    <form action="/bird" method="post">
+      Species:
+      <input type="text" name="species">
+      <br/> Despcription:
+      <input type="text" name="description">
+      <br/>
+      <input type="submit" value="Submit">
+    </form>
+
+    <!--
+      script runs on each page load to fetch the list of birds and add them to 
+      the existing table.
+    -->
+    <script>
+      birdTable = document.querySelector("table")
+      /*
+      use the browsers "fetch" API to make a GET call to /bird.
+      response will be a JSON list of birds:
+      [{}, {}]
+       */
+      fetch("/bird")
+        .then(response => response.json())
+        .then(birdList => {
+          // once list is fetched, iterates over it
+          birdList.forEach(bird => {
+            // create table row
+            row = document.createElement("tr")
+            // create table data elements for species and description
+            species = document.createElement("td")
+            species.innerHTML = bird.species
+            description = document.createElement("td")
+            description.innerHTML = bird.description
+
+            // add data elements to the row
+            row.appendChild(species)
+            row.appendChild(description)
+            // add row element to the table
+            birdTable.appendChild(row)
+          })
+        })
+    </script>
+  </body>
+</html>
