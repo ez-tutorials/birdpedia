@@ -8,12 +8,24 @@ package main
 // These are the libraries we are going to use
 // Both "fmt" and "net" are part of the Go standard library
 import (
+	"database/sql"
 	"fmt" // formatted I/O operations
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 	"net/http" // implement HTTP client and server
 )
 
 func newRouter() *mux.Router {
+	connString := "dbname=bird_encyclopedia sslmode=disable"
+	db, err := sql.Open("postgres", connString)
+	if err != nil {
+		panic(err)
+	}
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	InitStore(&dbStore{db: db})
 	r := mux.NewRouter()
 	r.HandleFunc("/hello", handler).Methods("GET")
 	// declare static file directory
